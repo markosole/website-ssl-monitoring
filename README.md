@@ -47,7 +47,9 @@ App runs Cron job at midnight every day and checks all domains listed in ` domai
 # Ho to run it
 
 In development
+
 node index.js
 
 In production
+
 ` pm2 start index.js `
