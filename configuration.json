@@ -1,0 +1,9 @@
+[
+    { 
+        "SOFT_REMINDER": 15,
+        "WARNING_REMINDER": 6,
+        "CRITICAL_REMINDER": 3,
+        "EMAIL_ALERTS": false,
+        "SLACK_ALERTS": true
+    }    
+]
