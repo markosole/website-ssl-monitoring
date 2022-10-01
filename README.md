@@ -45,7 +45,7 @@ App runs Cron job at midnight every day and checks all domains listed in ` domai
 ` npm install `
 
 # Ho to run it
-Before running the app make sure you create `.env` file from `.env.example` and populate as required. Change `NODE_ENV` to `development` if you want to se console log output. Keep in mind that `development` runs checks every number of ms set in CHECK_INTERVAL. On other had, `production` runns only at midnight and console output will be minimal. 
+Before running the app make sure you create `.env` file from `.env.example` and populate as required. Change `NODE_ENV` to `development` if you want to se console log output. Keep in mind that `development` runs checks every number of ms set in CHECK_INTERVAL. On other hand, `production` ENV runs only at midnight and console output will be minimal. 
 
 In development
 
@@ -54,3 +54,5 @@ In development
 In production
 
 ` pm2 start index.js `
+
+Make sure you have PM2 installed globaly on your system. 
