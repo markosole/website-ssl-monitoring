@@ -15,9 +15,13 @@ async function slackAlert(data, type){
             break;
         case "critical":
             color = "f55142";
+            break;
     } 
     
-    var alertDetails = {
+    var alertDetails = {};
+
+    if(type != "online_status"){
+      alertDetails = {
         'username': 'Website SSL alert',
         'text': 'Monitoring detected that one of SSL certificates expires soon.',
         'icon_emoji': ':bangbang:',
@@ -46,7 +50,7 @@ async function slackAlert(data, type){
               },
               {
                 "title": data.rejectedFor ? "There was an error with resoling domain:" : "",
-                "value": data.rejectedFor[0] + " Please check logs for details.",
+                "value": "Please check logs for details.",
                 "short": false
               }
           ],
@@ -66,6 +70,26 @@ async function slackAlert(data, type){
         ]
         }]
     };
+    }
+
+    // Override and send Online status message
+    if(type == "online_status"){
+        alertDetails = {
+          'username': 'Website SSL Monitoring',
+          'text': 'Monitoring service is operational and sites are monitored.',
+          'icon_emoji': ':bangbang:',
+          'attachments': [{
+            'color': color,
+            'fields': [
+                {
+                  "title": "Monitoring service is operational and sites are monitored.",
+                  "value": Date("Y-m-d hh:mm:ss"),
+                  "short": false
+                }
+            ]
+          }]
+      };
+    }
     /**
  * Handles the actual sending request. 
  * We're turning the https.request into a promise here for convenience
@@ -73,7 +97,7 @@ async function slackAlert(data, type){
  * @param messageBody
  * @return {Promise}
  */
-function sendSlackMessage (webhookURL, messageBody) {
+  function sendSlackMessage (webhookURL, messageBody) {
     // make sure the incoming message body can be parsed into valid JSON
     try {
       messageBody = JSON.stringify(messageBody);

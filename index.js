@@ -6,6 +6,7 @@ const sendEmail     = require('./utilities/emailer')
 const slackAlert    = require('./utilities/slack')
 const sslChecker    = require("ssl-checker");
 const cron          = require('node-cron');
+const cron_weekly   = require('node-cron');
 
 var CheckInterval   = parseInt(process.env.CHECK_INTERVAL);                                                             // check CheckInterval in ms
 const domainList    = process.env.DOMAIN_LIST;
@@ -13,8 +14,8 @@ const configuration = process.env.APP_CONFIGURATION;
 const isProduction  = process.env.NODE_ENV === "production" ? true : false;
 let didRun          = false;
 
-var isEmailAlerts   = true;
-var isSlackAlerts   = false;
+var isEmailAlerts   = false;
+var isSlackAlerts   = true;
 var SOFT_LIMIT      = 20;
 var WARNING_LIMIT   = 10;
 var CRITICAL_LIMIT  = 0;
@@ -40,6 +41,16 @@ if(isProduction){
         didRun = true;
         checkLimits();
         runChecks();
+      }, {
+        scheduled: true,
+        timezone: "Europe/Dublin"
+    });
+
+
+    // Schedule weekly Uptime and Online status report
+    cron_weekly.schedule('5 8 * * 7', () => {
+        console.log(' >>> Executing on Sun at 08:05 at Europe/Dublin timezone');
+        sendOnlineStatus();
       }, {
         scheduled: true,
         timezone: "Europe/Dublin"
@@ -135,6 +146,18 @@ async function verifyResults(response){
         }
     }
 
+}
+
+function sendOnlineStatus(){
+    // This will be sent once a week
+    const type = "online_status";
+    const notification = {                                                                                                // Parse data into new clean object
+        domainName: 0,                                                                                                    // Array type - all domains covered by Cert
+        validFrom: "NONE",
+        validTo: "NONE",
+        valid: true,
+    }
+    if(isSlackAlerts){slackAlert.slackAlert(notification, type);} 
 }
 
 
